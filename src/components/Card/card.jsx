@@ -1,15 +1,15 @@
 import Icon from '../Icon/icon'
 import './Card.css'
 
-function Card({player}){
+function Card({player,onPlay,index}){
     let icon = <Icon />
     if(player == 'X'){
         icon = <Icon name = "cross"/>
-    }else if(player == 'o'){
+    }else if(player == 'O'){
         icon = <Icon name = 'circle'/>
     }
     return(
-        <div className='card'>
+        <div className='card' onClick={() => onPlay(index)}>
            {icon}
         </div>
     )
