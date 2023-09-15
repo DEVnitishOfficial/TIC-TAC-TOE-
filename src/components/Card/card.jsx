@@ -1,7 +1,9 @@
 import Icon from '../Icon/icon'
 import './Card.css'
 
+
 function Card({ gameEnd,player,onPlay,index}){
+    
     let icon = <Icon />
     if(player == 'X'){
         icon = <Icon name = "cross"/>

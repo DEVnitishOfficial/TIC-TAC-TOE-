@@ -2,11 +2,23 @@ import { useState } from "react";
 import Card from "../Card/card";
 import isWinner from "../../Helpers/checkWinner";
 import './grid.css'
+import winSound from '../../assets/winner.wav'
+import clickSound from '../../assets/click.wav'
+import drawSound from '../../assets/draw.wav'
+
+
+
+const winAudio = new Audio(winSound);
+const clickAudio = new Audio(clickSound);
+const gameDraw = new Audio(drawSound)
+
 
 function Grid({numberOfCards}){
     const [board, setBoard] = useState(Array(numberOfCards).fill(""));
     const [turn, setTurn] = useState(true); // true ==> o, false ==> X
     const [winner,setWinner] = useState(null)
+    const [draw, setIsDraw] = useState(false);
+
 
     function play(index){
         if (turn === true){
@@ -14,12 +26,23 @@ function Grid({numberOfCards}){
         }else{
             board[index] = 'X'
         }
-        const win = isWinner(board, turn ? 'O' : 'X');
+        const newBoard = [...board];
+    newBoard[index] = turn ? 'O' : 'X';
+
+        const win = isWinner(newBoard, turn ? 'O' : 'X');
         if(win){
             setWinner(win);
+            winAudio.play(); // playing the winner sound
+            setIsDraw(false);
+        } else if (newBoard.every((cell) => cell !== '')) {
+            gameDraw.play(); // Play the draw sound
+        setIsDraw(true);
+
         }
-        setBoard([...board]);
+        setBoard(newBoard);
         setTurn(!turn)
+        clickAudio.play();
+
     }
     function reset(){
         setTurn(true);
@@ -32,6 +55,16 @@ function Grid({numberOfCards}){
                 winner &&(
                     <> 
                         <h1 className="turn-highlighter">Winner is {winner}</h1>
+                        <button className="reset" onClick={reset}>Reset Game</button>
+                    </>
+                )
+                
+            }
+
+            {
+                draw &&(
+                    <> 
+                        <h1 className="turn-highlighter">Match Draw</h1>
                         <button className="reset" onClick={reset}>Reset Game</button>
                     </>
                 )
